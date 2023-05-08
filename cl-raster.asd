@@ -14,5 +14,5 @@
            "Grolter <varedif.a.s@gmail.com>")
   :license "Apache 2.0"
   :depends-on ("cl-raster")
-  :pathname "src"
+  :pathname "tests"
   :components ((:file "packages")))
