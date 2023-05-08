@@ -5,7 +5,12 @@
            "Grolter <varedif.a.s@gmail.com>")
   :license "Apache 2.0"
   :pathname "src"
-  :components ((:file "packages"))
+  :components ((:file "packages")
+               (:file "scene")
+               (:file "parser")
+               (:file "core")
+               (:file "image")
+               (:file "raster"))
   :in-order-to ((test-op (test-op "cl-raster/tests"))))
 
 (defsystem "cl-raster/tests"
