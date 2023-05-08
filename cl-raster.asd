@@ -1,7 +1,7 @@
 (defsystem "cl-raster"
-  :description "Mikhail Fedorov <fedorov.mikhail.s@gmail.com>"
+  :description ""
   :version "0.0.0"
-  :author (""
+  :author ("Mikhail Fedorov <fedorov.mikhail.s@gmail.com>"
            "Grolter <varedif.a.s@gmail.com>")
   :license "Apache 2.0"
   :pathname "src"
