@@ -1,3 +1,38 @@
 ;;;; Rasterization renderer.
 
 (in-package #:cl-raster/core)
+
+(defun scalar-product (left right)
+  (+ (* (first left) (first right))
+     (* (second left) (second right))
+     (* (third left) (third right))))
+
+(defun scale-vector-by (vec num)
+  '((* (first vec) num)
+    (* (second vec) num)
+    (* (third vec) num)))
+
+(defun project-point-to-camera (camera point)
+  (let* ((to-point-vector (vector-from-to (camera-get-center camera) point))
+         (center-to-canvas-vector (scale-vector-by to-point-vector (/ 1 (scalar-product to-point-vector (camera-get-direction camera)))))
+         (in-canvas-vector (vector-difference center-to-canvas-vector (camera-get-direction camera)))
+         (x-canvas-coordinate (scalar-product (camera-get-x-vector camera) in-canvas-vector))
+         (y-canvas-coordinate (scalar-product (camera-get-y-vector camera) in-canvas-vector)))
+    '((round (* (/ (1+ x-canvas-coordinate) 2) (camera-get-width camera)))
+      (round (* (/ (1+ y-canvas-coordinate) 2) (camera-get-height camera))))))
+
+(defun render (scene camera)
+    (let ((image (make-array (camera-get-width camera)
+                             :initial-element (make-array (camera-get-height camera)
+                                                          :initial-element (make-RGB))))
+          (depths (make-array (camera-get-width camera)
+                              :initial-element (make-array (camera-get-height camera)
+                                                           :initial-element 0.0))))
+      (loop for triangle in (scene-get-triangles scene)
+            do (let ((a-point (project-point-to-camera camera (first triangle)))
+                     (b-point (project-point-to-camera camera (second triangle)))
+                     (c-point (project-point-to-camera camera (third triangle))))
+                 (setf (elt (second a-point) (elt (first a-point) image)) (make-RGB 255 255 255))
+                 (setf (elt (second b-point) (elt (first b-point) image)) (make-RGB 255 255 255))
+                 (setf (elt (second c-point) (elt (first c-point) image)) (make-RGB 255 255 255))))
+      image))
