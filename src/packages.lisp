@@ -1,10 +1,12 @@
 (defpackage #:cl-raster/scene
   (:use #:cl)
-  (:export #:camera-width)
-  (:export #:camera-height)
-  (:export #:camera-center)
-  (:export #:camera-direction)
-  (:export #:scene-triangles))
+  (:export #:camera-width
+           #:camera-height
+           #:camera-center
+           #:camera-direction
+           #:camera-x-vector
+           #:camera-y-vector
+           #:scene-triangles))
 
 (defpackage #:cl-raster/parser
   (:use #:cl)
@@ -14,8 +16,8 @@
 (defpackage #:cl-raster/core
   (:use #:cl)
   (:export #:render)
-  (:local-nicknames (#:scene #:cl-raster/scene))
-  (:local-nicknames (#:vectors #:3d-vectors)))
+  (:local-nicknames (#:scene #:cl-raster/scene)
+                    (#:vectors #:3d-vectors)))
 
 (defpackage #:cl-raster/image
   (:use #:cl)

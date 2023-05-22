@@ -6,7 +6,9 @@
   width
   height
   center
-  direction)
+  direction
+  x-vector
+  y-vector)
 
 (defstruct light-source
   color
