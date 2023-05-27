@@ -30,11 +30,11 @@
 (defun calculate-depth (point2d point-a point-b point-c)
   "Calculate depth of a point given depths of triangle vertices."
   (let ((distance-a (vectors:v2norm (vectors:v- point2d
-                                              (first point-a))))
+                                                (first point-a))))
         (distance-b (vectors:v2norm (vectors:v- point2d
-                                               (first point-b))))
+                                                (first point-b))))
         (distance-c (vectors:v2norm (vectors:v- point2d
-                                               (first point-c)))))
+                                                (first point-c)))))
     (/ (+ (* (second point-a) distance-b distance-c)
           (* (second point-b) distance-c distance-a)
           (* (second point-c) distance-a distance-b))
@@ -46,7 +46,7 @@
   (let ((image (make-array (list (scene:camera-width camera) (scene:camera-height camera))
                            :initial-element '(0 0 0)))
         (depths (make-array (list (scene:camera-width camera) (scene:camera-height camera))
-                            :initial-element NIL)))
+                            :initial-element :infinity)))
     (dolist (triangle (scene:scene-triangles scene))
       (let* ((a-point (project-point-to-camera camera (first triangle)))
              (b-point (project-point-to-camera camera (second triangle)))
@@ -68,13 +68,12 @@
         (loop for pixel-x from minimal-x to maximal-x
               do (loop for pixel-y from minimal-y to maximal-y
                        when (triangle-contains (list a-point b-point c-point) (list pixel-x pixel-y))
-                       do (let
-                            ((point-depth (calculate-depth
-                                            (vectors:vec2 pixel-x pixel-y)
-                                            a-point
-                                            b-point
-                                            c-point)))
-                            (when (or (eq (aref depths pixel-x pixel-y) nil)
+                       do (let ((point-depth (calculate-depth
+                                               (vectors:vec2 pixel-x pixel-y)
+                                               a-point
+                                               b-point
+                                               c-point)))
+                            (when (or (eq (aref depths pixel-x pixel-y) :infinity)
                                       (< point-depth (aref depths pixel-x pixel-y)))
                               (setf (aref image pixel-x pixel-y) '(255 255 255))
                               (setf (aref depths pixel-x pixel-y) point-depth)))))))

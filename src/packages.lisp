@@ -6,7 +6,16 @@
            #:camera-direction
            #:camera-x-vector
            #:camera-y-vector
-           #:scene-triangles))
+           #:make-camera
+           #:camera-p
+           #:scene-triangles
+           #:scene-light-sources
+           #:make-scene
+           #:scene-p
+           #:light-source-color
+           #:light-surce-point
+           #:make-light-source
+           #:light-source-p))
 
 (defpackage #:cl-raster/parser
   (:use #:cl)
