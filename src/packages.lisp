@@ -1,6 +1,7 @@
 (defpackage #:cl-raster/scene
   (:use #:cl)
-  (:export #:camera-width
+  (:export #:camera
+           #:camera-width
            #:camera-height
            #:camera-center
            #:camera-direction
@@ -8,10 +9,12 @@
            #:camera-y-vector
            #:make-camera
            #:camera-p
+           #:scene
            #:scene-triangles
            #:scene-light-sources
            #:make-scene
            #:scene-p
+           #:light-source
            #:light-source-color
            #:light-surce-point
            #:make-light-source
@@ -26,7 +29,7 @@
   (:use #:cl)
   (:export #:render)
   (:local-nicknames (#:scene #:cl-raster/scene)
-                    (#:vectors #:3d-vectors)))
+                    (#:v #:3d-vectors)))
 
 (defpackage #:cl-raster/image
   (:use #:cl)
