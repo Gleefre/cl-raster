@@ -23,7 +23,8 @@
 (defpackage #:cl-raster/parser
   (:use #:cl)
   (:export #:load-scene)
-  (:local-nicknames (#:scene #:cl-raster/scene)))
+  (:local-nicknames (#:scene #:cl-raster/scene)
+                    (#:vectors #:3d-vectors)))  
 
 (defpackage #:cl-raster/core
   (:use #:cl)
