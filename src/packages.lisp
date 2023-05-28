@@ -16,7 +16,7 @@
            #:scene-p
            #:light-source
            #:light-source-color
-           #:light-surce-point
+           #:light-source-point
            #:make-light-source
            #:light-source-p))
 
