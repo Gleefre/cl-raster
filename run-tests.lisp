@@ -7,6 +7,13 @@
   (when (probe-file init-file)
     (load init-file)))
 
+(mapc (lambda (system)
+        (mapc #'ql-dist:ensure-installed
+              (remove nil
+                      (mapcar #'ql-dist:find-system
+                              (asdf:system-depends-on (asdf:find-system system))))))
+      '(:cl-raster :cl-raster/tests))
+
 (asdf:load-asd (merge-pathnames "cl-raster.asd" (uiop:getcwd)))
 
 (let ((asdf:*compile-file-warnings-behaviour* :error))
