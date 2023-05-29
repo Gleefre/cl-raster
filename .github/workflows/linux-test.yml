@@ -17,6 +17,6 @@ jobs:
         curl -s -O https://beta.quicklisp.org/quicklisp.lisp
         sbcl --load quicklisp.lisp --eval "(quicklisp-quickstart:install)" --eval "(ql-util:without-prompting (ql:add-to-init-file))" --eval "(print ql:*quicklisp-home*)" --eval "(print (user-homedir-pathname))" --quit
     - name: install dependencies
-      run: sbcl --eval '(asdf:load-asd "cl-raster.asd")' --eval "(ql:quickload :cl-raster)" --eval "(ql:quickload :cl-raster/tests)" --quit
+      run: sbcl --eval "(push (uiop:getcwd) ql:*local-project-directories*)" --eval "(ql:quickload :cl-raster)" --eval "(ql:quickload :cl-raster/tests)" --quit
     - name: test
       run: ./run-tests.lisp
