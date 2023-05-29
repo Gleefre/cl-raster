@@ -9,12 +9,15 @@
 
 (asdf:load-asd (merge-pathnames "cl-raster.asd" (uiop:getcwd)))
 
-(mapc (lambda (system)
-        (mapc #'ql-dist:ensure-installed
-              (remove nil
-                      (mapcar #'ql-dist:find-system
-                              (asdf:system-depends-on (asdf:find-system system))))))
-      '(:cl-raster :cl-raster/tests))
+(ql:quickload :alexandria)
+
+(mapc #'ql-dist:ensure-installed
+      (alexandria:flatten
+       (mapcar #'ql-dist:dependency-tree
+               (apply #'append
+                      (mapcar #'asdf:system-depends-on
+                              (mapcar #'asdf:find-system
+                                      '(:cl-raster :cl-raster/tests)))))))
 
 (let ((asdf:*compile-file-warnings-behaviour* :error))
   (asdf:load-system :cl-raster :force T)
