@@ -20,17 +20,15 @@
          (o*->p* (v:v- O->p* (scene:camera-direction camera)))
          (x (v:v. (scene:camera-x-vector camera) o*->p*))
          (y (v:v. (scene:camera-y-vector camera) o*->p*)))
-    (make-depth-point :point
-                      (v:vec2 (round (* (/ (1+ x) 2) (scene:camera-width camera)))
-                              (round (* (/ (1+ y) 2) (scene:camera-height camera))))
-                      :depth
-                      (v:v. O->p
-                            (v:vunit (scene:camera-direction camera))))))
+    (make-depth-point :point (v:vec2 (round (* (/ (1+ x) 2) (scene:camera-width camera)))
+                                     (round (* (/ (1+ y) 2) (scene:camera-height camera))))
+                      :depth (v:v. O->p
+                                   (v:vunit (scene:camera-direction camera))))))
 
-(defun project-triangle-to-camera (camera trg)
+(defun project-triangle-to-camera (camera triangle)
   (mapcar (lambda (point)
             (project-point-to-camera camera point))
-          trg))
+          triangle))
 
 (defun triangle-contains (triangle point)
   (let ((a->p (v:v- point (depth-point-point (first triangle))))
