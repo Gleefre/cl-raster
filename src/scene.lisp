@@ -14,6 +14,16 @@
   color
   point)
 
+(defstruct mtl
+  Ka
+  Kd
+  Ks
+  Ns
+  Tr
+  Tf
+  Ni
+  illum)
+
 (defstruct scene
   triangles
   light-sources)

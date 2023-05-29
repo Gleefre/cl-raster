@@ -2,11 +2,33 @@
 
 (in-package #:cl-raster/parser)
 
+(defun raw-line-to-tokens (line)
+  (let ((line-no-comments (str:trim
+                            (str:substring
+                              0
+                              (position #\# line)
+                              line))))
+    (str:split " " line-no-comments :omit-nulls T)))
+
 (defun parse-mtl-file (filename)
-  (with-open-file (in-stream filename)
-    (loop for line = (read-line in-stream NIL)
-          while line))
-  NIL)
+  (let ((materials (make-hash-table))
+        (current-mtl NIL))
+    (with-open-file (in-stream filename)
+      (loop for line = (read-line in-stream NIL)
+            while line
+            for tokens = (raw-line-to-tokens line)
+            when tokens
+            do (progn
+                 (when (eq (first tokens) "newmtl")
+                   (setf (gethash (second tokens) (make-mtl))))
+                 (when (eq (first tokens) "Ks")
+                   (setf (material-Ks (gethash current-mtl))
+                         (list (parse-float (second tokens))
+                               (parse-float (third tokens))
+                               (parse-float (fourth tokens))))))))
+    materials))
+
+;;; See https://en.wikipedia.org/wiki/Wavefront_.obj_file
 
 (defun parsei-obj-file (filename)
   (let ((scene (list ()))
@@ -18,14 +40,9 @@
     (with-open-file (in-stream filename)
       (loop for line = (read-line in-stream NIL)
             while line
-            for line-no-comments = (str:trim
-                                     (str:substring
-                                       0
-                                       (position #\# line)
-                                       line))
-            when (str:emptyp line-no-comments)
-            do (next-iteration)
-            do (let ((tokens (str:split " " line-no-comments :omit-nulls T)))
+            for tokens = (raw-line-to-tokens line)
+            when tokens
+            do (progn
                  (when (eq (first tokens) "mtllib")
                    (parse-mtl-file (second tokens)))
                  (when (eq (first tokens) "usemtl")

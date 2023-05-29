@@ -18,7 +18,18 @@
            #:light-source-color
            #:light-source-point
            #:make-light-source
-           #:light-source-p))
+           #:light-source-p
+           #:mtl
+           #:mtl-Ka
+           #:mtl-Kd
+           #:mtl-Ks
+           #:mtl-Ns
+           #:mtl-Tr
+           #:mtl-Tf
+           #:mtl-Ni
+           #:mtl-illum
+           #:make-mtl
+           #:mtl-p))
 
 (defpackage #:cl-raster/parser
   (:use #:cl)
