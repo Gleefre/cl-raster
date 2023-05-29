@@ -27,7 +27,7 @@
                       (v:v. O->p
                             (v:vunit (scene:camera-direction camera))))))
 
-(defun trg-to-camera (camera trg)
+(defun project-triangle-to-camera (camera trg)
   (mapcar (lambda (point)
             (project-point-to-camera camera point))
           trg))
@@ -71,13 +71,13 @@
         (depths (make-array (list (scene:camera-width camera) (scene:camera-height camera))
                             :initial-element :infinity)))
     (dolist (triangle (scene:scene-triangles scene))
-      (let* ((flat-triangle (trg-to-camera camera triangle))
-             (minimal-x (max 0 (reduce #'min triangle :key #'d-p-x)))
-             (maximal-x (min (scene:camera-width camera)
-                             (reduce #'max triangle :key #'d-p-x)))
-             (minimal-y (max 0 (reduce #'min triangle :key #'d-p-y)))
-             (maximal-y (min (scene:camera-height camera)
-                             (reduce #'max triangle :key #'d-p-y))))
+      (let* ((flat-triangle (project-triangle-to-camera camera triangle))
+             (minimal-x (max 0 (reduce #'min flat-triangle :key #'d-p-x)))
+             (maximal-x (min (1- (scene:camera-width camera))
+                             (reduce #'max flat-triangle :key #'d-p-x)))
+             (minimal-y (max 0 (reduce #'min flat-triangle :key #'d-p-y)))
+             (maximal-y (min (1- (scene:camera-height camera))
+                             (reduce #'max flat-triangle :key #'d-p-y))))
         (loop for pixel-x from minimal-x to maximal-x
               do (loop for pixel-y from minimal-y to maximal-y
                        when (triangle-contains flat-triangle (v:vec2 pixel-x pixel-y))
@@ -85,6 +85,6 @@
                                                               flat-triangle)))
                             (when (or (eq (aref depths pixel-x pixel-y) :infinity)
                                       (< point-depth (aref depths pixel-x pixel-y)))
-                              (setf (aref image pixel-x pixel-y) '(255 255 255))
-                              (setf (aref depths pixel-x pixel-y) point-depth)))))))
+                              (setf (aref image pixel-x pixel-y) '(255 255 255)
+                                    (aref depths pixel-x pixel-y) point-depth)))))))
     image))
