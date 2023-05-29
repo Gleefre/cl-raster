@@ -17,4 +17,4 @@ jobs:
         curl -s -O https://beta.quicklisp.org/quicklisp.lisp
         sbcl --load quicklisp.lisp --eval "(quicklisp-quickstart:install)" --eval "(ql-util:without-prompting (ql:add-to-init-file))" --eval "(print ql:*quicklisp-home*)" --eval "(print (user-homedir-pathname))" --quit
     - name: test
-      run: sbcl --noinform --disable-debugger --load run-tests.lisp --quit
+      run: ./run-tests.lisp
