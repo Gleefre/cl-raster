@@ -20,8 +20,8 @@
          (o*->p* (v:v- O->p* (scene:camera-direction camera)))
          (x (v:v. (scene:camera-x-vector camera) o*->p*))
          (y (v:v. (scene:camera-y-vector camera) o*->p*)))
-    (make-depth-point :point (v:vec2 (round (* (/ (1+ x) 2) (scene:camera-width camera)))
-                                     (round (* (/ (1+ y) 2) (scene:camera-height camera))))
+    (make-depth-point :point (v:vec2 (* (/ (1+ x) 2) (scene:camera-width camera))
+                                     (* (/ (1+ y) 2) (scene:camera-height camera)))
                       :depth (v:v. O->p
                                    (v:vunit (scene:camera-direction camera))))))
 
@@ -70,12 +70,12 @@
                             :initial-element :infinity)))
     (dolist (triangle (scene:scene-triangles scene))
       (let* ((flat-triangle (project-triangle-to-camera camera triangle))
-             (minimal-x (max 0 (reduce #'min flat-triangle :key #'d-p-x)))
+             (minimal-x (max 0 (floor (reduce #'min flat-triangle :key #'d-p-x))))
              (maximal-x (min (1- (scene:camera-width camera))
-                             (reduce #'max flat-triangle :key #'d-p-x)))
-             (minimal-y (max 0 (reduce #'min flat-triangle :key #'d-p-y)))
+                             (ceiling (reduce #'max flat-triangle :key #'d-p-x))))
+             (minimal-y (max 0 (floor (reduce #'min flat-triangle :key #'d-p-y))))
              (maximal-y (min (1- (scene:camera-height camera))
-                             (reduce #'max flat-triangle :key #'d-p-y))))
+                             (ceiling (reduce #'max flat-triangle :key #'d-p-y)))))
         (loop for pixel-x from minimal-x to maximal-x
               do (loop for pixel-y from minimal-y to maximal-y
                        when (triangle-contains flat-triangle (v:vec2 pixel-x pixel-y))
