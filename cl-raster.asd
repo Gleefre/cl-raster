@@ -4,7 +4,7 @@
   :author ("Mikhail Fedorov <fedorov.mikhail.s@gmail.com>"
            "Grolter <varedif.a.s@gmail.com>")
   :license "Apache 2.0"
-  :depends-on ("3d-vectors")
+  :depends-on ("3d-vectors" "zpng")
   :pathname "src"
   :components ((:file "packages")
                (:file "scene")
