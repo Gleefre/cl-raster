@@ -63,6 +63,15 @@
   (vector-push-extend (vector u v w)
                       *vp-array*))
 
+;;; Initialize special variables
+
+(defmacro with-obj-chunk (&body body)
+  `(let ((*v-array*  (make-array 0 :adjustable T :fill-pointer 0))
+         (*vt-array* (make-array 0 :adjustable T :fill-pointer 0))
+         (*vn-array* (make-array 0 :adjustable T :fill-pointer 0))
+         (*vp-array* (make-array 0 :adjustable T :fill-pointer 0)))
+     ,@body))
+
 ;;; Toplevel parse functions
 
 (defun parse-line (line)
@@ -70,3 +79,11 @@
          (tokens (remove "" (uiop:split-string line) :test #'string=)))
     (when tokens
       (call-op (car tokens) (cdr tokens)))))
+
+(defun parse-obj (file)
+  (with-obj-chunk
+    (mapcar #'parse-line (uiop:read-file-lines file))
+    (list *v-array*
+          *vt-array*
+          *vn-array*
+          *vp-array*)))
