@@ -41,6 +41,28 @@
   (apply (gethash (parse-token op 'symbol) *ops* #'undefined-op)
          args))
 
+;;; vertex data
+
+(defvar *v-array*)
+(define-op v ((x float) (y float) (z float) &optional ((w float) 1))
+  (vector-push-extend (vector x y z w)
+                      *v-array*))
+
+(defvar *vt-array*)
+(define-op vt ((u float) &optional ((v float) 0) ((w float) 0))
+  (vector-push-extend (vector u v w)
+                      *vt-array*))
+
+(defvar *vn-array*)
+(define-op vn ((x float) (y float) (z float))
+  (vector-push-extend (vector x y z)
+                      *vn-array*))
+
+(defvar *vp-array*)
+(define-op vp ((u float) &optional ((v float) 0) ((w float) 1))
+  (vector-push-extend (vector u v w)
+                      *vp-array*))
+
 ;;; Toplevel parse functions
 
 (defun parse-line (line)
