@@ -1,0 +1,22 @@
+name: Linux test
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: setup SBCL
+      run: |
+        sudo apt-get -qq update
+        sudo apt-get -qq install sbcl
+    - name: install quicklisp
+      run: |
+        sudo apt-get -qq install curl
+        curl -s -O https://beta.quicklisp.org/quicklisp.lisp
+        sbcl --load quicklisp.lisp --eval "(quicklisp-quickstart:install)" --eval "(ql-util:without-prompting (ql:add-to-init-file))" --eval "(print ql:*quicklisp-home*)" --eval "(print (user-homedir-pathname))" --quit
+    - name: install dependencies
+      run: sbcl --eval "(push (uiop:getcwd) ql:*local-project-directories*)" --eval "(ql:quickload :cl-raster)" --eval "(ql:quickload :cl-raster/tests)" --quit
+    - name: test
+      run: ./run-tests.lisp
