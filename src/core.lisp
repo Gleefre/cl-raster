@@ -69,7 +69,7 @@
         (depths (make-array (list (scene:camera-width camera) (scene:camera-height camera))
                             :initial-element :infinity)))
     (dolist (triangle (scene:scene-triangles scene))
-      (let* ((flat-triangle (project-triangle-to-camera camera triangle))
+      (let* ((flat-triangle (project-triangle-to-camera camera (scene:triangle-face triangle)))
              (minimal-x (max 0 (reduce #'min flat-triangle :key #'d-p-x)))
              (maximal-x (min (1- (scene:camera-width camera))
                              (reduce #'max flat-triangle :key #'d-p-x)))

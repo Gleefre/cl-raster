@@ -18,12 +18,30 @@
            #:light-source-color
            #:light-source-point
            #:make-light-source
-           #:light-source-p))
+           #:light-source-p
+           #:mtl
+           #:mtl-Ka
+           #:mtl-Kd
+           #:mtl-Ks
+           #:mtl-Ns
+           #:mtl-Tr
+           #:mtl-Tf
+           #:mtl-Ni
+           #:mtl-illum
+           #:make-mtl
+           #:mtl-p
+           #:triangle
+           #:triangle-face
+           #:triangle-mtl
+           #:make-triangle
+           #:triangle-p))
 
 (defpackage #:cl-raster/parser
   (:use #:cl)
   (:export #:load-scene)
-  (:local-nicknames (#:scene #:cl-raster/scene)))
+  (:local-nicknames (#:scene #:cl-raster/scene)
+                    (#:vectors #:3d-vectors)
+                    (#:pf #:parse-float)))
 
 (defpackage #:cl-raster/core
   (:use #:cl)

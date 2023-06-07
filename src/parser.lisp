@@ -1,3 +1,90 @@
 ;;;; Parser of scene files (.obj).
 
 (in-package #:cl-raster/parser)
+
+(defun raw-line-to-tokens (line)
+  (let ((line-no-comments (str:trim
+                            (str:substring
+                              0
+                              (position #\# line)
+                              line))))
+    (str:split " " line-no-comments :omit-nulls T)))
+
+(defun parse-mtl-file (filename)
+  (let ((materials (make-hash-table))
+        (current-mtl NIL))
+    (with-open-file (in-stream filename)
+      (loop for line = (read-line in-stream NIL)
+            while line
+            for tokens = (raw-line-to-tokens line)
+            when tokens
+            do (when (eq (first tokens) "newmtl")
+                 (setf (gethash (second tokens) materials) (scene:make-mtl)
+                       current-mtl (second tokens)))
+               (when (eq (first tokens) "Ka")
+                 (setf (scene:mtl-Ka (gethash current-mtl materials))
+                       (list (pf:parse-float (second tokens))
+                             (pf:parse-float (third tokens))
+                             (pf:parse-float (fourth tokens)))))
+               (when (eq (first tokens) "Kd")
+                 (setf (scene:mtl-Kd (gethash current-mtl materials))
+                       (list (pf:parse-float (second tokens))
+                             (pf:parse-float (third tokens))
+                             (pf:parse-float (fourth tokens)))))
+               (when (eq (first tokens) "Ks")
+                 (setf (scene:mtl-Ks (gethash current-mtl materials))
+                       (list (pf:parse-float (second tokens))
+                             (pf:parse-float (third tokens))
+                             (pf:parse-float (fourth tokens)))))
+               (when (eq (first tokens) "Ns")
+                 (setf (scene:mtl-Ns (gethash current-mtl materials))
+                       (pf:parse-float (second tokens))))
+               (when (eq (first tokens) "Tr")
+                 (setf (scene:mtl-Tr (gethash current-mtl materials))
+                       (pf:parse-float (second tokens))))
+               (when (eq (first tokens) "d")
+                 (setf (scene:mtl-Tr (gethash current-mtl materials))
+                       (- 1 (pf:parse-float (second tokens)))))
+               (when (eq (first tokens) "illum")
+                 (setf (scene:mtl-illum (gethash current-mtl materials))
+                       (parse-integer (second tokens))))))
+    materials))
+
+;;; See https://en.wikipedia.org/wiki/Wavefront_.obj_file
+
+(defun parsei-obj-file (filename)
+  (let ((scene (list ()))
+        (triangles (list))
+        (points (list))
+        (points-norm (list))
+        (points-texture (list))
+        (materials (make-hash-table))
+        (current-mtl nil))
+    (with-open-file (in-stream filename)
+      (loop for line = (read-line in-stream NIL)
+            while line
+            for tokens = (raw-line-to-tokens line)
+            when tokens
+            do  (when (eq (first tokens) "mtllib")
+                  (let ((new-mtls (parse-mtl-file (second tokens))))
+                    (loop for key being the hash-keys of new-mtls
+                          using (hash-value value)
+                          do (setf (gethash key materials) value))))
+                (when (eq (first tokens) "usemtl")
+                  (setf current-mtl (gethash (second tokens) materials)))
+                (when (eq (first tokens) "v")
+                  (push (apply #'vectors:vec (cdr tokens)) points))
+                (when (eq (first tokens) "vn")
+                  (push (apply #'vectors:vec (cdr tokens)) points-norm))
+                (when (eq (first tokens) "vt")
+                  (push (apply #'vectors:vec (cdr tokens)) points-texture))
+                (when (eq (first tokens) "f")
+                  (loop for index from 1 to (- (length tokens) 2)
+                        do (push (scene:make-triangle 
+                                   :face (list (nth (parse-integer (nth index tokens)) points)
+                                               (nth (parse-integer (nth (+ index 1) tokens)) points)
+                                               (nth (parse-integer (nth (+ index 2) tokens)) points))
+                                   :mtl current-mtl)
+                                 triangles)))))
+    scene))
+
