@@ -24,6 +24,10 @@
   Ni
   illum)
 
+(defstruct triangle
+  face
+  mtl)
+
 (defstruct scene
   triangles
   light-sources)

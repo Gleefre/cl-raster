@@ -29,13 +29,19 @@
            #:mtl-Ni
            #:mtl-illum
            #:make-mtl
-           #:mtl-p))
+           #:mtl-p
+           #:triangle
+           #:triangle-face
+           #:triangle-mtl
+           #:make-triangle
+           #:triangle-p))
 
 (defpackage #:cl-raster/parser
   (:use #:cl)
   (:export #:load-scene)
   (:local-nicknames (#:scene #:cl-raster/scene)
-                    (#:vectors #:3d-vectors)))  
+                    (#:vectors #:3d-vectors)
+                    (#:pf #:parse-float)))
 
 (defpackage #:cl-raster/core
   (:use #:cl)
