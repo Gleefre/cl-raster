@@ -34,7 +34,7 @@
   (- (* (v:vx a) (v:vy b))
      (* (v:vy a) (v:vx b))))
 
-(defun triangle-contains (triangle point)
+(defun triangle-point-depth-p (triangle point)
   (destructuring-bind (a b c)
       (mapcar #'depth-point-point triangle)
     (let* ((AP (v:v- point A))
@@ -83,7 +83,7 @@
                              (ceiling (reduce #'max flat-triangle :key #'d-p-y)))))
         (loop for pixel-x from minimal-x to maximal-x
               do (loop for pixel-y from minimal-y to maximal-y
-                       for point-depth = (triangle-contains flat-triangle (v:vec2 pixel-x pixel-y))
+                       for point-depth = (triangle-point-depth-p flat-triangle (v:vec2 pixel-x pixel-y))
                        when point-depth
                        do (when (or (eq (aref depths pixel-x pixel-y) :infinity)
                                     (< point-depth (aref depths pixel-x pixel-y)))
