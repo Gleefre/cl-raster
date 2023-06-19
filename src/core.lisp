@@ -35,6 +35,8 @@
      (* (v:vy a) (v:vx b))))
 
 (defun triangle-point-depth-p (triangle point)
+  "Calculates depth of the point when it is inside of the triangle.
+   Returns NIL otherwise."
   (destructuring-bind (a b c)
       (mapcar #'depth-point-point triangle)
     (let* ((AP (v:v- point A))
@@ -52,21 +54,6 @@
               (* s/b (depth-point-depth (second triangle)))
               (* s/c (depth-point-depth (third  triangle))))
            s)))))
-
-(defun calculate-depth (point2d triangle)
-  "Calculate depth of a point given depths of triangle vertices."
-  (let ((distance-a (v:v2norm (v:v- point2d
-                                    (depth-point-point (first triangle)))))
-        (distance-b (v:v2norm (v:v- point2d
-                                    (depth-point-point (second triangle)))))
-        (distance-c (v:v2norm (v:v- point2d
-                                    (depth-point-point (third triangle))))))
-    (/ (+ (* (depth-point-depth (first triangle)) distance-b distance-c)
-          (* (depth-point-depth (second triangle)) distance-c distance-a)
-          (* (depth-point-depth (third triangle)) distance-a distance-b))
-       (+ (* distance-a distance-b)
-          (* distance-b distance-c)
-          (* distance-c distance-a)))))
 
 (defun render (scene camera)
   (let ((image (make-array (list (scene:camera-width camera) (scene:camera-height camera))
