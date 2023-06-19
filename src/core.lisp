@@ -69,8 +69,10 @@
              (maximal-y (min (1- (scene:camera-height camera))
                              (ceiling (reduce #'max flat-triangle :key #'d-p-y)))))
         (loop for pixel-x from minimal-x to maximal-x
+              for point-x from (+ 1/2 minimal-x)
               do (loop for pixel-y from minimal-y to maximal-y
-                       for point-depth-p = (triangle-point-depth-p flat-triangle (v:vec2 pixel-x pixel-y))
+                       for point-y from (+ 1/2 minimal-y)
+                       for point-depth-p = (triangle-point-depth-p flat-triangle (v:vec2 point-x point-y))
                        when point-depth-p
                        do (when (or (eq (aref depths pixel-x pixel-y) :infinity)
                                     (< point-depth-p (aref depths pixel-x pixel-y)))
