@@ -50,10 +50,10 @@
       (when (= (float-sign s/a)
                (float-sign s/b)
                (float-sign s/c))
-        (/ (+ (* s/a (depth-point-depth (first  triangle)))
-              (* s/b (depth-point-depth (second triangle)))
-              (* s/c (depth-point-depth (third  triangle))))
-           s)))))
+        (/ s
+           (+ (* s/a (/ (depth-point-depth (first  triangle))))
+              (* s/b (/ (depth-point-depth (second triangle))))
+              (* s/c (/ (depth-point-depth (third  triangle))))))))))
 
 (defun render (scene camera)
   (let ((image (make-array (list (scene:camera-width camera) (scene:camera-height camera))
